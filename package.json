@@ -21,5 +21,6 @@
   },
   "homepage": "https://github.com/xtiam57/scaffolar",
   "devDependencies": {
+    "gulp": "~3.8.6"
   }
 }
