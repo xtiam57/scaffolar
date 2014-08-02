@@ -1,10 +1,30 @@
+var config = {
+  SRC_PATH: 'src',
+  DIST_PATH: 'dist',
+  SASS_PATH: [
+    'src/styles/sass/style.scss',
+    'src/styles/sass/vendors.scss',
+  ],
+  SASS_WATCH: 'src/styles/sass/**/*.scss',
+  CSS_PATH: 'dist/css',
+  VENDORS_PATH: 'src/vendors/**/*.js',
+  JS_PATH: 'dist/js',
+  APP_SRC: 'src/app/**/*.js',
+  APP_DIST: 'dist/js',
+  APP_CONCAT: 'app.js',
+  HTML_WATCH: [
+    'src/index.html',
+    'src/templates/**/*.html'
+  ]
+};
+
 var gulp = require('gulp'),
     plumber = require('gulp-plumber'),
     uglify = require('gulp-uglify'),
     concat = require('gulp-concat'),
     sourcemaps = require('gulp-sourcemaps'),
     ngAnnotate = require('gulp-ng-annotate'),
-    rename = require("gulp-rename"),
+    rename = require('gulp-rename'),
     browserSync = require('browser-sync'),
     reload = browserSync.reload,
     sass = require('gulp-ruby-sass'),
@@ -14,13 +34,16 @@ var gulp = require('gulp'),
 gulp.task('browser-sync', function() {
   browserSync({
     server: {
-      baseDir: ['src', 'dist']
+      baseDir: [
+        config.SRC_PATH,
+        config.DIST_PATH
+      ],
     }
   });
 });
 
 gulp.task('sass', function() {
-  gulp.src('src/styles/sass/**/*.scss')
+  gulp.src(config.SASS_PATH)
     .pipe(plumber())
     .pipe(sass({ compass: true, lineNumbers: true }))
     .pipe(autoprefixer(
@@ -31,25 +54,25 @@ gulp.task('sass', function() {
       'ios 6',
       'android 4'
     ))
-    .pipe(gulp.dest('dist/css'))
+    .pipe(gulp.dest(config.CSS_PATH))
     .pipe(browserSync.reload({ stream: true }));
 });
 
 gulp.task('js', function() {
-  gulp.src('src/vendors/**/*.js')
+  gulp.src(config.VENDORS_PATH)
     .pipe(plumber())
     .pipe(uglify())
     .pipe(rename({ suffix: '.min' }))
-    .pipe(gulp.dest('dist/js'))
+    .pipe(gulp.dest(config.JS_PATH))
     .pipe(browserSync.reload({ stream: true, once: true }));
 });
 
 gulp.task('app', function() {
-  gulp.src('src/app/**/*.js')
+  gulp.src(config.APP_SRC)
     .pipe(plumber())
-    .pipe(concat('app.js', { newLine: ';' }))
-    .pipe(ngAnnotate({ single_quotes: true }))
-    .pipe(gulp.dest('dist/js'))
+    .pipe(concat(config.APP_CONCAT, { newLine: ';' }))
+    .pipe(ngAnnotate())
+    .pipe(gulp.dest(config.APP_DIST))
     .pipe(browserSync.reload({ stream: true, once: true }));
 });
 
@@ -58,8 +81,8 @@ gulp.task('reload', function() {
 });
 
 gulp.task('default', ['sass', 'js', 'app', 'browser-sync'], function() {
-  gulp.watch(['src/index.html', 'src/tamplates/**/*.html'], ['reload']);
-  gulp.watch(['src/app/**/*.js'], ['app']);
-  gulp.watch(['src/vendors/**/*.js'], ['js']);
-  gulp.watch(['src/styles/**/*.scss'], ['sass']);
+  gulp.watch(config.HTML_WATCH, ['reload']);
+  gulp.watch(config.APP_SRC, ['app']);
+  gulp.watch(config.VENDORS_PATH, ['js']);
+  gulp.watch(config.SASS_WATCH, ['sass']);
 });
