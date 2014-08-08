@@ -1,7 +1,7 @@
 var config = {
   SRC_PATH: 'src',
   DIST_PATH: 'dist',
-  PREPROCESSOR: 'sass',
+  PREPROCESSOR: 'less',
   SASS_PATH: [
     'src/styles/sass/style.scss',
     'src/styles/sass/vendors.scss',
@@ -103,7 +103,7 @@ gulp.task('reload', function() {
   browserSync.reload({ once: true });
 });
 
-gulp.task('default', ['sass', 'js', 'app', 'browser-sync'], function() {
+gulp.task('default', [config.PREPROCESSOR, 'js', 'app', 'browser-sync'], function() {
   gulp.watch(config.HTML_WATCH, ['reload']);
   gulp.watch(config.APP_SRC, ['app']);
   gulp.watch(config.VENDORS_PATH, ['js']);
