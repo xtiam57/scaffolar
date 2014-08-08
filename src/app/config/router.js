@@ -5,6 +5,7 @@ angular.module ('app')
         url: '/',
         controller: 'HomeController',
         templateUrl: 'templates/home.tpl.html',
+        title: 'Home'
       });
 
     $urlRouterProvider.otherwise('/');

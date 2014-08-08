@@ -103,20 +103,13 @@ gulp.task('reload', function() {
   browserSync.reload({ once: true });
 });
 
-if (config.PREPROCESSOR === 'sass') {
-  // Running with SASS preprocessor
-  gulp.task('default', ['sass', 'js', 'app', 'browser-sync'], function() {
-    gulp.watch(config.HTML_WATCH, ['reload']);
-    gulp.watch(config.APP_SRC, ['app']);
-    gulp.watch(config.VENDORS_PATH, ['js']);
+gulp.task('default', ['sass', 'js', 'app', 'browser-sync'], function() {
+  gulp.watch(config.HTML_WATCH, ['reload']);
+  gulp.watch(config.APP_SRC, ['app']);
+  gulp.watch(config.VENDORS_PATH, ['js']);
+
+  if (config.PREPROCESSOR === 'sass')
     gulp.watch(config.SASS_WATCH, ['sass']);
-  });
-} else {
-  // Running with LESS preprocessor
-  gulp.task('default', ['less', 'js', 'app', 'browser-sync'], function() {
-    gulp.watch(config.HTML_WATCH, ['reload']);
-    gulp.watch(config.APP_SRC, ['app']);
-    gulp.watch(config.VENDORS_PATH, ['js']);
+  else
     gulp.watch(config.LESS_WATCH, ['less']);
-  });
-}
+});

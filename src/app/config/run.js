@@ -1,5 +1,5 @@
 angular.module('app')
-  .run(function($rootScope, $log, Restangular) {
+  .run(function($rootScope, $log, Restangular, PageService) {
     // Acts like a before filer, trigger before render the view
     // Broadcasted before a route change. At this point the route services starts
     // resolving all of the dependencies needed for the route change to occur.
@@ -14,7 +14,7 @@ angular.module('app')
     // Broadcasted after a route dependencies are resolved. ngView listens
     // for the directive to instantiate the controller and render the view.
     $rootScope.$on('$stateChangeSuccess', function (event, toState, toParams, fromState, fromParams) {
-
+      PageService.refresh();
     });
 
 
