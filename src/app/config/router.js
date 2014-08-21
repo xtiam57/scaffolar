@@ -4,7 +4,7 @@ angular.module ('app')
       .state('home', {
         url: '/',
         controller: 'HomeController',
-        templateUrl: 'templates/home.tpl.html',
+        templateUrl: 'views/home.tpl.html',
         title: 'Home'
       });
 

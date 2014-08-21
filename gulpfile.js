@@ -1,38 +1,105 @@
 var config = {
-  SRC_PATH: './src',
-  DIST_PATH: './dist',
-  PREPROCESSOR: 'less', // Options: less | sass
-  ENV: 'development', // Options: development | production
-  SASS_PATH: [
-    './src/styles/sass/style.scss',
-    './src/styles/sass/vendors.scss',
-  ],
-  SASS_WATCH: './src/styles/sass/**/*.scss',
-  LESS_PATH: [
-    './src/styles/less/style.less',
-    './src/styles/less/vendors.less',
-  ],
-  LESS_WATCH: './src/styles/less/**/*.less',
-  CSS_PATH: './dist/css',
-  VENDORS_PATH: './src/vendors/**/*.js',
-  JS_PATH: './dist/js',
-  APP_PATH: '../app/',
-  APP_SRC: './src/app/**/*.js',
-  APP_DIST: './dist/js',
-  APP_CONCAT: 'app.js',
-  HTML_WATCH: [
-    './src/index.html',
-    './src/templates/**/*.html'
-  ],
-  HTML_DIST: './dist/',
-  IMAGES_SRC: './src/assets/images/*',
-  IMAGES_DIST: './dist/images/',
-  ICONS_SRC: './src/assets/icons/*',
-  ICONS_DIST: './dist/icons/',
-  FONTS_SRC: './src/assets/fonts/*',
-  FONTS_DIST: './dist/fonts/',
-  FILES_SRC: './src/assets/files/*',
-  FILES_DIST: './dist/files/',
+  // Base Paths
+  SRC_PATH     : './src',
+  DIST_PATH    : './dist',
+
+  // General Settings
+  PREPROCESSOR : 'less',                                    // Select which CSS pre-porcessor you want to use. Options: less | sass
+  ENV          : 'development',                             // Options: development | production
+
+  // SASS Settings
+  get SASS_PATH() {
+    return [
+      this.SRC_PATH + '/styles/sass/style.scss',            // Custom styles
+      this.SRC_PATH + '/styles/sass/vendors.scss',          // Vendor's styles (e.g. bootstrap, font-awesome, foundation, etc.)
+    ];
+  },
+  get SASS_WATCH() {
+    return this.SRC_PATH + '/styles/sass/**/*.scss';        // We are going to watch all *.scss files to compile
+  },
+
+  // LESS Settings
+  get LESS_PATH() {
+    return [
+      this.SRC_PATH + '/styles/less/style.less',            // Custom styles
+      this.SRC_PATH + '/styles/less/vendors.less',          // Vendor's styles (e.g. bootstrap, font-awesome, foundation, etc.)
+    ];
+  },
+  get LESS_WATCH() {
+    return this.SRC_PATH + '/styles/less/**/*.less';        // We are going to watch all *.less files to compile
+  },
+
+  // CSS Settings
+  get CSS_PATH() {
+    return this.DIST_PATH + '/css';                         // The folder for all compiled CSS
+  },
+
+  // Vendor's Javascript Settings
+  get VENDORS_PATH() {
+    return this.SRC_PATH + '/vendors/**/*.js';              // In this folder we are going to put all 3rd party libraries (e.g. jQuery, Underscore.js, etc.)
+  },
+
+  // AngularJS App
+  get APP_PATH() {
+    return '../app/';                                       // Here's the source code of our app. Used for sourcemapping
+  },
+  get APP_SRC() {
+    return this.SRC_PATH + '/app/**/*.js';                  // All the JS to concat, compile and watch are here
+  },
+  get APP_DIST() {
+    return this.DIST_PATH + '/js';                          // The folder for compiled App
+  },
+  get APP_CONCAT() {
+    return 'app.js';                                        // Concat all JS and save it with this name
+  },
+
+  // JavaScript Settings
+  get JS_PATH() {
+    return this.DIST_PATH + '/js';                          // The folder for all compiled JS
+  },
+
+  // HTML Settings
+  get HTML_WATCH() {
+    return [
+      this.SRC_PATH + '/index.html',                        // Watch the main index.html
+      this.SRC_PATH + '/views/**/*.html'                    // Watch all views
+    ];
+  },
+  get HTML_DIST() {
+    return this.DIST_PATH;                                  // When build task is excecuted we put all minifyed HTML here
+  },
+
+  // Images Settings
+  get IMAGES_SRC() {
+    return this.SRC_PATH + '/assets/images/*';
+  },
+  get IMAGES_DIST() {
+    return this.DIST_PATH + '/images/';                     // All compresed images here
+  },
+
+  // Icons Settings
+  get ICONS_SRC() {
+    return this.SRC_PATH + '/assets/icons/*';
+  },
+  get ICONS_DIST() {
+    return this.DIST_PATH + '/icons/';                      // All compresed images here
+  },
+
+  // Fonts Settings
+  get FONTS_SRC() {
+    return this.SRC_PATH + '/assets/fonts/*';
+  },
+  get FONTS_DIST() {
+    return this.DIST_PATH + '/fonts/';                      // All fonts in distribution folder
+  },
+
+  // Assets Settings
+  get FILES_SRC() {
+    return this.SRC_PATH + '/assets/files/*';
+  },
+  get FILES_DIST() {
+    return this.DIST_PATH + '/files/';                      // All files in distribution folder
+  },
 };
 
 var gulp = require('gulp'),
@@ -50,7 +117,6 @@ var gulp = require('gulp'),
     imagemin = require('gulp-imagemin'),
     htmlmin = require('gulp-htmlmin'),
     runSequence = require('gulp-run-sequence');
-
 
 gulp.task('browser-sync', function() {
   browserSync({
