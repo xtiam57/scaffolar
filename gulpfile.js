@@ -1,7 +1,7 @@
 var config = {
   // Base Paths
-  SRC_PATH     : './src',
-  DIST_PATH    : './dist',
+  SRC_PATH     : 'src',
+  DIST_PATH    : 'dist',
 
   // General Settings
   PREPROCESSOR : 'less',                                    // Select which CSS pre-porcessor you want to use. Options: less | sass
@@ -132,7 +132,12 @@ gulp.task('browser-sync', function() {
 gulp.task('sass', function() {
   gulp.src(config.SASS_PATH)
     .pipe(plumber())
-    .pipe(sass({ compass: true, lineNumbers: true }))
+    .pipe(sass({
+      compass: true,
+      lineNumbers: false,
+      precision: 6,
+      style: (config.ENV === 'development' ? 'nested' : 'compressed')
+    }))
     .pipe(autoprefixer(
       'last 2 version',
       '> 1%',
