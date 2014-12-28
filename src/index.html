@@ -7,46 +7,37 @@
   <meta name="description" content="">
   <meta name="keywords" content="">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="author" content="">
 
-  <!-- Styles -->
-  <link rel="stylesheet" href="css/vendors.css">
-  <link rel="stylesheet" href="css/style.css">
+  <!-- build:css css/vendors.css -->
+
+  <!-- bower:css -->
+  <link rel="stylesheet" href="../bower_components/font-awesome/css/font-awesome.css" />
+  <!-- endbower -->
+
+  <!-- endbuild -->
+
+  <!-- Custom style -->
+  <link rel="stylesheet" href="css/custom-vendors.min.css">
+  <link rel="stylesheet" href="css/style.min.css">
 
   <!-- favicon -->
-  <link rel="shortcut icon" type="image/x-icon" href="icons/favicon.ico">
   <link rel="shortcut icon" type="image/png" href="icons/favicon.png">
-
-  <!-- Facebook -->
-  <meta property="og:title" content="">
-  <meta property="og:description" content="">
-  <meta property="og:type" content="website">
-  <meta property="og:url" content="">
-  <meta property="og:image" content="">
-
-  <!-- Twitter -->
-  <meta name="twitter:card" content="summary">
-  <meta name="twitter:site" content="@">
-  <meta name="twitter:creator" content="@">
-  <meta name="twitter:url" content="">
-  <meta name="twitter:title" content="">
-  <meta name="twitter:description" content="">
-  <meta name="twitter:image" content="">
-
-  <!-- Apple icons -->
-  <link rel="apple-touch-icon-precomposed" href="icons/apple-touch-icon.png">
-  <link rel="apple-touch-icon-precomposed" sizes="72x72" href="icons/apple-touch-icon-72x72.png">
-  <link rel="apple-touch-icon-precomposed" sizes="114x114" href="icons/apple-touch-icon-114x114.png">
-  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="icons/apple-touch-icon-144x144.png">
-
-  <!-- Windows 8 icon and tile color -->
-  <meta name="msapplication-TileColor" content="#">
-  <meta name="msapplication-TileImage" content="icons/tileicon.png">
 
   <!--[if lt IE 9]>
   <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
   <![endif]-->
+
+  <!-- Google Analytics: change UA-XXXXX-X to be your site's ID. -->
+  <script>
+    (function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=
+    function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;
+    e=o.createElement(i);r=o.getElementsByTagName(i)[0];
+    e.src='//www.google-analytics.com/analytics.js';
+    r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));
+    ga('create','UA-XXXXX-X');ga('send','pageview');
+  </script>
+  <!-- /Google Analytics -->
 </head>
 <body>
   <h1>Lorem ipsum dolor sit amet.</h1>
@@ -56,16 +47,27 @@
   <div ui-view ng-cloak class="ng-cloak"></div>
   <!-- /Templates -->
 
-  <!-- Scripts -->
-  <script src="js/angularjs/angular.min.js"></script>
-  <script src="js/angularjs/angular-sanitize.min.js"></script>
-  <script src="js/angularjs/angular-ui-router.min.js"></script>
-  <script src="js/angularjs/restangular.min.js"></script>
-  <script src="js/jquery/jquery.min.js"></script>
-  <script src="js/underscore/underscore.min.js"></script>
-  <script src="js/bootstrap/bootstrap.min.js"></script>
+  <!-- build:js js/vendors.js -->
+
+  <!-- bower:js -->
+  <script src="../bower_components/jquery/dist/jquery.js"></script>
+  <script src="../bower_components/angular/angular.js"></script>
+  <script src="../bower_components/bootstrap/dist/js/bootstrap.js"></script>
+  <script src="../bower_components/angular-ui-router/release/angular-ui-router.js"></script>
+  <script src="../bower_components/moment/moment.js"></script>
+  <script src="../bower_components/underscore/underscore.js"></script>
+  <!-- endbower -->
+
+  <!-- endbuild -->
+
+  <!-- Custom vendors -->
+  <script src="js/custom-vendors.min.js"></script>
 
   <!-- App -->
-  <script src="js/app.js"></script>
+  <script src="js/app.min.js"></script>
+
+  <!-- inject:partials -->
+  <!-- angular templates will be automaticaly converted in js and inserted here -->
+  <!-- endinject -->
 </body>
 </html>

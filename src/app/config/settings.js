@@ -1,5 +1,5 @@
 angular.module ('app')
-  .config(function ($logProvider, $locationProvider, RestangularProvider, API) {
+  .config(function ($logProvider, $locationProvider, API) {
     // Log configuration
     $logProvider.debugEnabled(true);
 

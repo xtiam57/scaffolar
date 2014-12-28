@@ -50,45 +50,6 @@ $ gulp
 $ gulp build
 ```
 
-## What's included
-
-Within the download you'll find the following directories and files, logically grouping common assets and providing both compiled and minified variations. You'll see something like this:
-
-```
-scaffolar/
-├── dist/
-│   ├── css/
-│   │   ├── style.css
-│   │   ├── vendors.css
-│   ├── js/
-│   │   ├── angularjs/
-│   │   │   ├── angular-sanitize.min.js
-│   │   │   ├── angular-ui-router.min.js
-│   │   │   ├── angular.min.js
-│   │   │   ├── restangular.min.js
-│   │   │   ├── ui-bootstrap.min.js
-│   │   ├── jquery/
-│   │   │   ├── jquery.min.js
-│   │   ├── moment/
-│   │   │   ├── moment.min.js
-│   │   ├── underscore/
-│   │   │   ├── underscore.min.js
-│   │   ├── app.js
-├── src/
-│   ├── bootstrap.css
-│   ├── bootstrap.min.css
-│   ├── bootstrap-theme.css
-│   └── bootstrap-theme.min.css
-└── .editorconfig
-└── .gitignore
-└── gulpfile.js
-└── LICENSE
-└── package.json
-└── README.md
-```
-
-## Creator
-
 **Christiam Mena**
 
 - <http://twitter.com/xtiam57>

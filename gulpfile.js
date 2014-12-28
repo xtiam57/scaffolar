@@ -1,160 +1,74 @@
-var config = {
-  // Base Paths
-  SRC_PATH     : 'src',
-  DIST_PATH    : 'dist',
+// Convention names
+var development = 'DEV',
+    distribution = 'DIST',
+    lessLang = 'less',
+    sassLang = 'sass';
 
-  // General Settings
-  PREPROCESSOR : 'less',                                    // Select which CSS pre-porcessor you want to use. Options: less | sass
-  ENV          : 'development',                             // Options: development | production
+// Environment variables
+var ENV = development,
+    PREPROCESSOR = lessLang,
+    PORT = 7070;
 
-  // SASS Settings
-  get SASS_PATH() {
-    return [
-      this.SRC_PATH + '/styles/sass/style.scss',            // Custom styles
-      this.SRC_PATH + '/styles/sass/vendors.scss',          // Vendor's styles (e.g. bootstrap, font-awesome, foundation, etc.)
-    ];
-  },
-  get SASS_WATCH() {
-    return this.SRC_PATH + '/styles/sass/**/*.scss';        // We are going to watch all *.scss files to compile
-  },
+// Gulp plugins
+var gulp = require('gulp');
+var $ = require('gulp-load-plugins')({
+  pattern: ['gulp-*', 'main-bower-files', 'browser-sync', 'wiredep']
+});
 
-  // LESS Settings
-  get LESS_PATH() {
-    return [
-      this.SRC_PATH + '/styles/less/style.less',            // Custom styles
-      this.SRC_PATH + '/styles/less/vendors.less',          // Vendor's styles (e.g. bootstrap, font-awesome, foundation, etc.)
-    ];
-  },
-  get LESS_WATCH() {
-    return this.SRC_PATH + '/styles/less/**/*.less';        // We are going to watch all *.less files to compile
-  },
+// Connects with a local server (development)
+gulp.task('connect', function() {
+  var routes = {
+    // Should be '/bower_components': '../bower_components'
+    // Waiting for https://github.com/shakyShane/browser-sync/issues/308
+    '/bower_components': 'bower_components'
+  };
 
-  // CSS Settings
-  get CSS_PATH() {
-    return this.DIST_PATH + '/css';                         // The folder for all compiled CSS
-  },
-
-  // Vendor's Javascript Settings
-  get VENDORS_PATH() {
-    return this.SRC_PATH + '/vendors/**/*.js';              // In this folder we are going to put all 3rd party libraries (e.g. jQuery, Underscore.js, etc.)
-  },
-
-  // AngularJS App
-  get APP_PATH() {
-    return '../app/';                                       // Here's the source code of our app. Used for sourcemapping
-  },
-  get APP_SRC() {
-    return this.SRC_PATH + '/app/**/*.js';                  // All the JS to concat, compile and watch are here
-  },
-  get APP_DIST() {
-    return this.DIST_PATH + '/js';                          // The folder for compiled App
-  },
-  get APP_CONCAT() {
-    return 'app.js';                                        // Concat all JS and save it with this name
-  },
-
-  // JavaScript Settings
-  get JS_PATH() {
-    return this.DIST_PATH + '/js';                          // The folder for all compiled JS
-  },
-
-  // HTML Settings
-  get HTML_WATCH() {
-    return [
-      this.SRC_PATH + '/index.html',                        // Watch the main index.html
-      this.SRC_PATH + '/views/**/*.html'                    // Watch all views
-    ];
-  },
-  get HTML_DIST() {
-    return this.DIST_PATH;                                  // When build task is excecuted we put all minifyed HTML here
-  },
-
-  // Images Settings
-  get IMAGES_SRC() {
-    return this.SRC_PATH + '/assets/images/*';
-  },
-  get IMAGES_DIST() {
-    return this.DIST_PATH + '/images/';                     // All compresed images here
-  },
-
-  // Icons Settings
-  get ICONS_SRC() {
-    return this.SRC_PATH + '/assets/icons/*';
-  },
-  get ICONS_DIST() {
-    return this.DIST_PATH + '/icons/';                      // All compresed images here
-  },
-
-  // Fonts Settings
-  get FONTS_SRC() {
-    return this.SRC_PATH + '/assets/fonts/*';
-  },
-  get FONTS_DIST() {
-    return this.DIST_PATH + '/fonts/';                      // All fonts in distribution folder
-  },
-
-  // Assets Settings
-  get FILES_SRC() {
-    return this.SRC_PATH + '/assets/files/*';
-  },
-  get FILES_DIST() {
-    return this.DIST_PATH + '/files/';                      // All files in distribution folder
-  },
-};
-
-var gulp = require('gulp'),
-    plumber = require('gulp-plumber'),
-    uglify = require('gulp-uglify'),
-    concat = require('gulp-concat'),
-    sourcemaps = require('gulp-sourcemaps'),
-    ngAnnotate = require('gulp-ng-annotate'),
-    rename = require('gulp-rename'),
-    browserSync = require('browser-sync'),
-    reload = browserSync.reload,
-    sass = require('gulp-ruby-sass'),
-    less = require('gulp-less'),
-    autoprefixer = require('gulp-autoprefixer'),
-    imagemin = require('gulp-imagemin'),
-    htmlmin = require('gulp-htmlmin'),
-    runSequence = require('gulp-run-sequence');
-
-gulp.task('browser-sync', function() {
-  browserSync({
+  $.browserSync({
+    port: PORT,
     server: {
-      baseDir: [
-        config.SRC_PATH,
-        config.DIST_PATH
-      ],
-    }
+      baseDir: ['src', 'dist'],
+      routes: routes
+    },
   });
 });
 
-gulp.task('sass', function() {
-  gulp.src(config.SASS_PATH)
-    .pipe(plumber())
-    .pipe(sass({
-      compass: true,
-      lineNumbers: false,
-      precision: 6,
-      style: (config.ENV === 'development' ? 'nested' : 'compressed')
-    }))
-    .pipe(autoprefixer(
-      'last 2 version',
-      '> 1%',
-      'ie 8',
-      'ie 9',
-      'ios 6',
-      'android 4'
-    ))
-    .pipe(gulp.dest(config.CSS_PATH))
-    .pipe(browserSync.reload({ stream: true }));
+// Compiles (uglifies) all 3rd party libraries in src/vendors
+gulp.task('compileCustomeVendors', function() {
+  return gulp.src('src/vendors/**/*.js')
+    .pipe($.plumber())
+    .pipe($.newer('dist/js'))
+    .pipe($.concat('custom-vendors.min.js', { newLine: ';' }))
+    .pipe($.uglify({ preserveComments: 'some' }))
+    .pipe(gulp.dest('dist/js'))
+    .pipe($.size({ title: 'compileCustomeVendors', showFiles: true }))
+    .pipe($.browserSync.reload({ stream: true }));
 });
 
+// Compiles, concats, annotates and uglifies the whole app
+gulp.task('compileApp', function() {
+  return gulp.src('src/app/**/*.js')
+    .pipe($.plumber())
+    .pipe($.newer('dist/js'))
+    .pipe($.jshint())
+    .pipe($.jshint.reporter('jshint-stylish'))
+    .pipe($.if(ENV === development, $.sourcemaps.init()))
+    .pipe($.concat('app.min.js', { newLine: ';' }))
+    .pipe($.ngAnnotate())
+    .pipe($.uglify({ preserveComments: 'some' }))
+    .pipe($.if(ENV === development, $.sourcemaps.write('../maps', { includeContent: false, sourceRoot: '/app' })))
+    .pipe(gulp.dest('dist/js'))
+    .pipe($.size({ title: 'compileApp', showFiles: true }))
+    .pipe($.browserSync.reload({ stream: true }));
+});
+
+// Compiles, auto-prefixes and minifies all .less files
 gulp.task('less', function() {
-  gulp.src(config.LESS_PATH)
-    .pipe(plumber())
-    .pipe(less())
-    .pipe(autoprefixer(
+  // NOTE: if I return the stream, when there is an error, everything breaks
+  gulp.src('src/styles/less/{custom-vendors,style}.less')
+    .pipe($.plumber())
+    .pipe($.newer('dist/css'))
+    .pipe($.less())
+    .pipe($.autoprefixer(
       'last 2 version',
       '> 1%',
       'ie 8',
@@ -162,94 +76,146 @@ gulp.task('less', function() {
       'ios 6',
       'android 4'
     ))
-    .pipe(gulp.dest(config.CSS_PATH))
-    .pipe(browserSync.reload({ stream: true }));
+    .pipe($.if(ENV !== development, $.csso()))
+    .pipe($.rename({ suffix: '.min' }))
+    .pipe(gulp.dest('dist/css'))
+    .pipe($.size({ title: 'less', showFiles: true }))
+    .pipe($.browserSync.reload({ stream: true }));
 });
 
-gulp.task('js', function() {
-  gulp.src(config.VENDORS_PATH)
-    .pipe(plumber())
-    .pipe(uglify())
-    .pipe(rename({ suffix: '.min' }))
-    .pipe(gulp.dest(config.JS_PATH))
-    .pipe(browserSync.reload({ stream: true, once: true }));
+// Compiles, auto-prefixes and minifies all .scss files
+gulp.task('sass', function() {
+  return gulp.src('src/styles/sass/{custom-vendors,style}.scss')
+    .pipe($.plumber())
+    .pipe($.newer('dist/css'))
+    .pipe($.rubySass({
+      compass: true,
+      lineNumbers: ENV === development,
+      precision: 6,
+    }))
+    .pipe($.autoprefixer(
+      'last 2 version',
+      '> 1%',
+      'ie 8',
+      'ie 9',
+      'ios 6',
+      'android 4'
+    ))
+    .pipe($.if(ENV !== development, $.csso()))
+    .pipe($.rename({ suffix: '.min' }))
+    .pipe(gulp.dest('dist/css'))
+    .pipe($.size({ title: 'sass', showFiles: true }))
+    .pipe($.browserSync.reload({ stream: true }));
 });
 
-gulp.task('app', function() {
-  if (config.ENV === 'development') {
-    gulp.src(config.APP_SRC)
-      .pipe(plumber())
-      .pipe(sourcemaps.init())
-      .pipe(concat(config.APP_CONCAT, { newLine: ';' }))
-      .pipe(ngAnnotate())
-      .pipe(uglify())
-      .pipe(sourcemaps.write({ includeContent: false, sourceRoot: config.APP_PATH }))
-      .pipe(gulp.dest(config.APP_DIST))
-      .pipe(browserSync.reload({ stream: true, once: true }));
-  } else {
-    gulp.src(config.APP_SRC)
-      .pipe(plumber())
-      .pipe(concat(config.APP_CONCAT, { newLine: ';' }))
-      .pipe(ngAnnotate())
-      .pipe(uglify())
-      .pipe(gulp.dest(config.APP_DIST))
-      .pipe(browserSync.reload({ stream: true, once: true }));
-  }
+// Just copies all assets in the dist folder
+gulp.task('copyAssets', function() {
+  return gulp.src('src/assets/{images,fonts,icons,misc}/**/*')
+    .pipe($.plumber())
+    .pipe($.newer('dist/'))
+    .pipe(gulp.dest('dist/'))
+    .pipe($.size({ title: 'copyAssets', showFiles: true }))
+    .pipe($.browserSync.reload({ stream: true }));
 });
 
-gulp.task('images', function() {
-  return gulp.src(config.IMAGES_SRC)
-    .pipe(imagemin())
-    .pipe(gulp.dest(config.IMAGES_DIST))
-    .pipe(browserSync.reload({ stream: true, once: true }));
+// Put all bower fonts into dist
+gulp.task('copyFonts', function() {
+  return gulp.src($.mainBowerFiles())
+    .pipe($.filter('**/*.{eot,svg,ttf,woff,otf}'))
+    .pipe($.flatten())
+    .pipe(gulp.dest('dist/fonts'))
+    .pipe($.size({ title: 'copyFonts', showFiles: true }));
 });
 
-gulp.task('fonts', function() {
-  return gulp.src(config.FONTS_SRC)
-    .pipe(gulp.dest(config.FONTS_DIST))
-    .pipe(browserSync.reload({ stream: true, once: true }));
+// Generates AngularJS modules, which pre-load your HTML code into the $templateCache
+// This way AngularJS doesn't need to request the actual HTML files anymore
+gulp.task('partials', function() {
+  return gulp.src('src/app/**/*.html')
+    .pipe($.htmlmin({ removeComments: true, collapseWhitespace: true }))
+    .pipe($.ngHtml2Js({ moduleName: 'app' }))
+    .pipe($.uglify({ preserveComments: 'some' }))
+    .pipe(gulp.dest('dist/partials'))
+    .pipe($.size({ title: 'partials', showFiles: true }));
 });
 
-gulp.task('icons', function() {
-  return gulp.src(config.ICONS_SRC)
-    .pipe(imagemin())
-    .pipe(gulp.dest(config.ICONS_DIST))
-    .pipe(browserSync.reload({ stream: true, once: true }));
+// Just copies index.html into dist folder
+gulp.task('copyIndex', function() {
+  return gulp.src('src/index.html')
+    .pipe($.plumber())
+    .pipe(gulp.dest('dist/'))
+    .pipe($.size({ title: 'copyIndex', showFiles: true }));
 });
 
-gulp.task('files', function() {
-  return gulp.src(config.FILES_SRC)
-    .pipe(gulp.dest(config.FILES_DIST))
-    .pipe(browserSync.reload({ stream: true, once: true }));
+// Inject all partials (*.js) into dist/index.html
+gulp.task('injectPartials', ['copyIndex', 'partials'], function() {
+  return gulp.src('dist/index.html')
+    .pipe($.plumber())
+    .pipe($.inject(gulp.src('dist/partials/**/*.js', { read: false }), {
+      starttag: '<!-- inject:partials -->',
+      addRootSlash: false,
+      relative: true
+    }))
+    // .pipe(htmlmin({ removeComments: true, collapseWhitespace: true }))
+    .pipe(gulp.dest('dist/'))
+    .pipe($.size({ title: 'injectPartials', showFiles: true }));
 });
 
-gulp.task('html', function() {
-  return gulp.src(config.HTML_WATCH, { base: config.SRC_PATH })
-    .pipe(htmlmin({ removeComments: true, collapseWhitespace: true }))
-    .pipe(gulp.dest(config.HTML_DIST));
+// Injects bower components
+gulp.task('wiredep', function() {
+  var wiredep = $.wiredep.stream;
+  return gulp.src('src/index.html')
+    .pipe(wiredep({
+      directory: 'bower_components',
+      exclude: [/bootstrap.css/],
+    }))
+    .pipe(gulp.dest('src'))
+    .pipe($.size({ title: 'wiredep', showFiles: true }));
 });
 
-gulp.task('reload', function() {
-  browserSync.reload({ once: true });
+// Change and concat bower assets
+gulp.task('useref', function() {
+  var jsFilter = $.filter('**/*.js');
+  var cssFilter = $.filter('**/*.css');
+  var assets = $.useref.assets();
+
+  return gulp.src('src/index.html')
+    .pipe(assets)
+    .pipe(jsFilter)
+    .pipe($.uglify({ preserveComments: 'some' }))
+    .pipe(jsFilter.restore())
+    .pipe(cssFilter)
+    .pipe($.csso())
+    .pipe(cssFilter.restore())
+    .pipe($.rev())
+    .pipe(assets.restore())
+    .pipe($.useref())
+    .pipe($.revReplace())
+    .pipe(gulp.dest('dist'));
+});
+
+// Build task (for production only)
+gulp.task('build', function() {
+  var temp = ENV;
+  ENV = distribution;
+  $.runSequence('compileCustomeVendors', 'compileApp', PREPROCESSOR, 'copyAssets', 'copyFonts', 'wiredep', 'injectPartials', 'useref', function() {
+    ENV = temp;
+  });
+});
+
+// Build and serves
+gulp.task('default', function() {
+  $.runSequence(['compileCustomeVendors', 'compileApp', PREPROCESSOR, 'copyAssets', 'copyFonts', 'wiredep'], 'connect', 'watch');
 });
 
 gulp.task('watch', function() {
-  gulp.watch(config.HTML_WATCH, ['reload']);
-  gulp.watch(config.APP_SRC, ['app']);
-  gulp.watch(config.VENDORS_PATH, ['js']);
-  gulp.watch(config.IMAGES_SRC, ['images']);
-  gulp.watch(config.FONTS_SRC, ['fonts']);
-  gulp.watch(config.ICONS_SRC, ['icons']);
-  gulp.watch(config.FILES_SRC, ['files']);
+  gulp.watch(['src/vendors/**/*.js'], ['compileCustomeVendors']);
+  gulp.watch(['src/app/**/*.js'], ['compileApp']);
+  gulp.watch(['src/assets/**/*'], ['copyAssets']);
+  gulp.watch(['src/app/**/*.html', 'src/index.html'], $.browserSync.reload);
 
-  if (config.PREPROCESSOR === 'sass')
-    gulp.watch(config.SASS_WATCH, ['sass']);
+  if (PREPROCESSOR === lessLang)
+    gulp.watch(['src/styles/less/**/*.less'], ['less']);
   else
-    gulp.watch(config.LESS_WATCH, ['less']);
-});
+    gulp.watch(['src/styles/sass/**/*.scss'], ['sass']);
 
-gulp.task('default', function() {
-  runSequence([config.PREPROCESSOR, 'js', 'app', 'images', 'fonts', 'icons', 'files'], 'browser-sync', 'watch');
 });
-
-gulp.task('build', [config.PREPROCESSOR, 'js', 'app', 'images', 'fonts', 'icons', 'files', 'html']);

@@ -1,5 +1,5 @@
 angular.module('app')
-  .run(function($rootScope, $log, Restangular, PageService) {
+  .run(function($rootScope, $log, PageService) {
     // Acts like a before filer, trigger before render the view
     // Broadcasted before a route change. At this point the route services starts
     // resolving all of the dependencies needed for the route change to occur.
@@ -27,19 +27,5 @@ angular.module('app')
     // Fired when a requested state cannot be found using the provided state name during transition. The event is broadcast allowing any handlers a single chance to deal with the error (usually by lazy-loading the unfound state).
     $rootScope.$on('$stateNotFound', function (event, unfoundState, fromState, fromParams) {
 
-    });
-
-
-    // Intercept Restangular successful responses
-    Restangular.setResponseInterceptor(function(data, operation, what, url, response, deferred) {
-      $log.info('Finished loading: ' + operation.toUpperCase() + ' ' + url);
-      return data;
-    });
-
-
-    // Intercept Restangular error responses
-    Restangular.setErrorInterceptor(function(response) {
-      $log.error(response);
-      return false; // stop the promise chain
     });
   });
