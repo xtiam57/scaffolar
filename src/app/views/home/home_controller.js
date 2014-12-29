@@ -1,6 +1,5 @@
 angular.module('app')
-  .controller('HomeController', function($scope, HomeService) {
-    $scope.variable = HomeService.get() + 'World!!';
+  .controller('HomeController', function($scope) {
     console.log('From controller');
     console.log('Another log from controller');
   });

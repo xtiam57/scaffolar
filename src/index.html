@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-  <title>Scaffolar | {{ page.title }}</title>
+  <title ng-bind="(gPage.pageTitle | available:'')"></title>
   <meta name="description" content="">
   <meta name="keywords" content="">
   <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -40,22 +40,29 @@
   <!-- /Google Analytics -->
 </head>
 <body>
-  <h1>Lorem ipsum dolor sit amet.</h1>
-  <h3>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Corporis, a.</h3>
 
-  <!-- Templates -->
-  <div ui-view ng-cloak class="ng-cloak"></div>
-  <!-- /Templates -->
+  <div class="container">
+    <div class="jumbotron">
+      <h1>Scaffolar</h1>
+      <h3>The AngularJS' scaffolding tool for single page websites</h3>
+
+      <!-- Templates -->
+      <div ui-view ng-cloak class="ng-cloak"></div>
+      <!-- /Templates -->
+    </div>
+  </div>
 
   <!-- build:js js/vendors.js -->
 
   <!-- bower:js -->
   <script src="../bower_components/jquery/dist/jquery.js"></script>
   <script src="../bower_components/angular/angular.js"></script>
+  <script src="../bower_components/angular-ui-bootstrap-bower/ui-bootstrap-tpls.js"></script>
   <script src="../bower_components/bootstrap/dist/js/bootstrap.js"></script>
   <script src="../bower_components/angular-ui-router/release/angular-ui-router.js"></script>
   <script src="../bower_components/moment/moment.js"></script>
   <script src="../bower_components/underscore/underscore.js"></script>
+  <script src="../bower_components/underscore.string/lib/underscore.string.js"></script>
   <!-- endbower -->
 
   <!-- endbuild -->

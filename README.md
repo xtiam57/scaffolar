@@ -2,9 +2,6 @@ Scaffolar
 =========
 
 The AngularJS' scaffolding tool for single page websites.
-> Compile Sass to CSS with [Ruby Sass](http://sass-lang.com/install)
-
-> Also, you can use [Compass](http://compass-style.org/)
 
 This project is an application skeleton for a typical AngularJS web app. You can use it to quickly bootstrap your angular webapp projects and dev environment for these projects.
 
@@ -18,24 +15,24 @@ To get you started you can simply clone the Scaffolar repository and install the
 
 ### Prerequisites
 
-You need git to clone the angular-seed repository. You can get it from
-[http://git-scm.com/](http://git-scm.com/).
+You need git to clone the Scaffolar repository.
 
-We also use a number of node.js tools to initialize and test angular-seed. You must have node.js and
+We also use a number of node.js tools to initialize Scaffolar. You must have node.js and
 its package manager (npm) installed.  You can get them from [http://nodejs.org/](http://nodejs.org/).
 
 ### Install
 
-Clone the angular-seed repository using [git][git]:
+Clone the Scaffolar repository using Git:
 
 ```sh
-$ git clone https://github.com/angular/angular-seed.git
-$ cd angular-seed
+$ git clone https://github.com/xtiam57/scaffolar
+$ cd scaffolar
 ```
 Then run:
 
 ```sh
 $ npm install
+$ bower install
 ```
 
 ## Serve

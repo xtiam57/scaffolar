@@ -1,6 +1,5 @@
 angular.module('app')
   .run(function($rootScope, $log, PageService) {
-    // Acts like a before filer, trigger before render the view
     // Broadcasted before a route change. At this point the route services starts
     // resolving all of the dependencies needed for the route change to occur.
     // Typically this involves fetching the view template as well as any dependencies defined
@@ -8,13 +7,15 @@ angular.module('app')
     // is fired.
     $rootScope.$on('$stateChangeStart', function (event, toState, toParams, fromState, fromParams) {
       // TODO: check if the current route requires Auth and the user is logged in
+      // TODO: create a global array for routes that require Auth
     });
 
 
     // Broadcasted after a route dependencies are resolved. ngView listens
     // for the directive to instantiate the controller and render the view.
     $rootScope.$on('$stateChangeSuccess', function (event, toState, toParams, fromState, fromParams) {
-      PageService.refresh();
+      // Setting page properties
+      PageService.get();
     });
 
 
@@ -28,4 +29,13 @@ angular.module('app')
     $rootScope.$on('$stateNotFound', function (event, unfoundState, fromState, fromParams) {
 
     });
+
+    // Fix for windows height
+    $rootScope.$on('$viewContentLoaded', function (event) {
+      // $('body, #sb-site').css('height', '1px');
+      // $('body, #sb-site').css('height', 'auto');
+    });
+
+    // To access the $log service in HTML
+    $rootScope.$log = $log;
   });

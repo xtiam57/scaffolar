@@ -54,7 +54,7 @@ gulp.task('watch', function() {
   gulp.watch(['src/app/**/*.js'], ['app']);
   gulp.watch(['src/assets/**/*'], ['assets']);
   gulp.watch(['src/app/**/*.html', 'src/index.html'], $.browserSync.reload);
-  gulp.watch('bower.json', ['wiredep']);
+  gulp.watch('bower.json', ['bower']);
 
   if (isLess())
     gulp.watch(['src/styles/less/**/*.less'], ['less']);
@@ -212,7 +212,7 @@ gulp.task('inject', ['index', 'partials'], function() {
 //////////////////////////////
 // Injects bower components //
 //////////////////////////////
-gulp.task('wiredep', function() {
+gulp.task('bower', function() {
   var wiredep = $.wiredep.stream;
   return gulp.src('src/index.html')
     .pipe(wiredep({
@@ -220,7 +220,7 @@ gulp.task('wiredep', function() {
       exclude: [/bootstrap.css/],
     }))
     .pipe(gulp.dest('src'))
-    .pipe($.size({ title: 'wiredep', showFiles: true }));
+    .pipe($.size({ title: 'bower', showFiles: true }));
 });
 
 //////////////////////////////////////
@@ -253,7 +253,7 @@ gulp.task('useref', function() {
 gulp.task('build', function() {
   var temp = ENV;
   ENV = distribution;
-  $.runSequence('customVendors', 'app', PREPROCESSOR, 'assets', 'fonts', 'wiredep', 'inject', 'useref', function() {
+  $.runSequence('customVendors', 'app', PREPROCESSOR, 'assets', 'fonts', 'bower', 'inject', 'useref', function() {
     ENV = temp;
   });
 });
@@ -262,7 +262,7 @@ gulp.task('build', function() {
 // Build and serves //
 //////////////////////
 gulp.task('default', function() {
-  $.runSequence(['customVendors', 'app', PREPROCESSOR, 'assets', 'fonts', 'wiredep'], 'connect', 'watch');
+  $.runSequence(['customVendors', 'app', PREPROCESSOR, 'assets', 'fonts', 'bower'], 'connect', 'watch');
 });
 
 
