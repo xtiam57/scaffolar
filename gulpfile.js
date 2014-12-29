@@ -1,21 +1,35 @@
-// Convention names
-var development = 'DEV',
-    distribution = 'DIST',
-    lessLang = 'less',
-    sassLang = 'sass';
+//////////////////////
+// Convention names //
+//////////////////////
+var development = 'DEV',        // Development's tag name
+    distribution = 'DIST',      // Distribution's tag name
+    lessLang = 'less',          // Less language
+    sassLang = 'sass';          // Sass language
 
-// Environment variables
-var ENV = development,
-    PREPROCESSOR = lessLang,
-    PORT = 7070;
+///////////////////////////
+// Environment variables //
+///////////////////////////
+var ENV = development,          // Environment type (development | distribution)
+    PREPROCESSOR = lessLang,    // Prepocessor type (lessLang | sassLang)
+    PORT = 7070;                // Port's number
 
-// Gulp plugins
+function isDevelopment() { return ENV === development; }
+function isDistribution() { return ENV === distribution; }
+function isLess() { return PREPROCESSOR === lessLang; }
+function isSass() { return PREPROCESSOR === sassLang; }
+
+////////////////////
+// Gulp's plugins //
+////////////////////
 var gulp = require('gulp');
+// Loading all the pluigins in package.json
 var $ = require('gulp-load-plugins')({
   pattern: ['gulp-*', 'main-bower-files', 'browser-sync', 'wiredep']
 });
 
-// Connects with a local server (development)
+/////////////////////////////////////////////////////
+// Connects with a local server (development mode) //
+/////////////////////////////////////////////////////
 gulp.task('connect', function() {
   var routes = {
     // Should be '/bower_components': '../bower_components'
@@ -32,36 +46,59 @@ gulp.task('connect', function() {
   });
 });
 
-// Compiles (uglifies) all 3rd party libraries in src/vendors
-gulp.task('compileCustomeVendors', function() {
+//////////////
+// Watchers //
+//////////////
+gulp.task('watch', function() {
+  gulp.watch(['src/vendors/**/*.js'], ['customVendors']);
+  gulp.watch(['src/app/**/*.js'], ['app']);
+  gulp.watch(['src/assets/**/*'], ['assets']);
+  gulp.watch(['src/app/**/*.html', 'src/index.html'], $.browserSync.reload);
+  gulp.watch('bower.json', ['wiredep']);
+
+  if (isLess())
+    gulp.watch(['src/styles/less/**/*.less'], ['less']);
+  else
+    gulp.watch(['src/styles/sass/**/*.scss'], ['sass']);
+
+});
+
+////////////////////////////////////////////////////////////////
+// Compiles (uglifies) all 3rd party libraries in src/vendors //
+////////////////////////////////////////////////////////////////
+gulp.task('customVendors', function() {
   return gulp.src('src/vendors/**/*.js')
     .pipe($.plumber())
     .pipe($.newer('dist/js'))
     .pipe($.concat('custom-vendors.min.js', { newLine: ';' }))
     .pipe($.uglify({ preserveComments: 'some' }))
     .pipe(gulp.dest('dist/js'))
-    .pipe($.size({ title: 'compileCustomeVendors', showFiles: true }))
+    .pipe($.size({ title: 'customVendors', showFiles: true }))
     .pipe($.browserSync.reload({ stream: true }));
 });
 
-// Compiles, concats, annotates and uglifies the whole app
-gulp.task('compileApp', function() {
+/////////////////////////////////////////////////////////////
+// Compiles, concats, annotates and uglifies the whole app //
+/////////////////////////////////////////////////////////////
+gulp.task('app', function() {
   return gulp.src('src/app/**/*.js')
     .pipe($.plumber())
     .pipe($.newer('dist/js'))
     .pipe($.jshint())
     .pipe($.jshint.reporter('jshint-stylish'))
-    .pipe($.if(ENV === development, $.sourcemaps.init()))
+    .pipe($.if(isDevelopment(), $.sourcemaps.init()))
     .pipe($.concat('app.min.js', { newLine: ';' }))
     .pipe($.ngAnnotate())
     .pipe($.uglify({ preserveComments: 'some' }))
-    .pipe($.if(ENV === development, $.sourcemaps.write('../maps', { includeContent: false, sourceRoot: '/app' })))
+    .pipe($.if(isDevelopment(), $.sourcemaps.write('../maps', { includeContent: false, sourceRoot: '/app' })))
     .pipe(gulp.dest('dist/js'))
-    .pipe($.size({ title: 'compileApp', showFiles: true }))
+    .pipe($.size({ title: 'app', showFiles: true }))
     .pipe($.browserSync.reload({ stream: true }));
 });
 
-// Compiles, auto-prefixes and minifies all .less files
+//////////////////////////////////////////////////////////
+// Compiles, auto-prefixes and minifies all .less files //
+//////////////////////////////////////////////////////////
 gulp.task('less', function() {
   // NOTE: if I return the stream, when there is an error, everything breaks
   gulp.src('src/styles/less/{custom-vendors,style}.less')
@@ -76,21 +113,23 @@ gulp.task('less', function() {
       'ios 6',
       'android 4'
     ))
-    .pipe($.if(ENV !== development, $.csso()))
+    .pipe($.if(isDevelopment(), $.csso()))
     .pipe($.rename({ suffix: '.min' }))
     .pipe(gulp.dest('dist/css'))
     .pipe($.size({ title: 'less', showFiles: true }))
     .pipe($.browserSync.reload({ stream: true }));
 });
 
-// Compiles, auto-prefixes and minifies all .scss files
+//////////////////////////////////////////////////////////
+// Compiles, auto-prefixes and minifies all .scss files //
+//////////////////////////////////////////////////////////
 gulp.task('sass', function() {
   return gulp.src('src/styles/sass/{custom-vendors,style}.scss')
     .pipe($.plumber())
     .pipe($.newer('dist/css'))
     .pipe($.rubySass({
       compass: true,
-      lineNumbers: ENV === development,
+      lineNumbers: isDevelopment(),
       precision: 6,
     }))
     .pipe($.autoprefixer(
@@ -101,34 +140,40 @@ gulp.task('sass', function() {
       'ios 6',
       'android 4'
     ))
-    .pipe($.if(ENV !== development, $.csso()))
+    .pipe($.if(isDevelopment(), $.csso()))
     .pipe($.rename({ suffix: '.min' }))
     .pipe(gulp.dest('dist/css'))
     .pipe($.size({ title: 'sass', showFiles: true }))
     .pipe($.browserSync.reload({ stream: true }));
 });
 
-// Just copies all assets in the dist folder
-gulp.task('copyAssets', function() {
+///////////////////////////////////////////////
+// Just copies all assets in the dist folder //
+///////////////////////////////////////////////
+gulp.task('assets', function() {
   return gulp.src('src/assets/{images,fonts,icons,misc}/**/*')
     .pipe($.plumber())
     .pipe($.newer('dist/'))
     .pipe(gulp.dest('dist/'))
-    .pipe($.size({ title: 'copyAssets', showFiles: true }))
+    .pipe($.size({ title: 'assets', showFiles: true }))
     .pipe($.browserSync.reload({ stream: true }));
 });
 
-// Put all bower fonts into dist
-gulp.task('copyFonts', function() {
+///////////////////////////////////
+// Put all bower fonts into dist //
+///////////////////////////////////
+gulp.task('fonts', function() {
   return gulp.src($.mainBowerFiles())
     .pipe($.filter('**/*.{eot,svg,ttf,woff,otf}'))
     .pipe($.flatten())
     .pipe(gulp.dest('dist/fonts'))
-    .pipe($.size({ title: 'copyFonts', showFiles: true }));
+    .pipe($.size({ title: 'fonts', showFiles: true }));
 });
 
-// Generates AngularJS modules, which pre-load your HTML code into the $templateCache
-// This way AngularJS doesn't need to request the actual HTML files anymore
+////////////////////////////////////////////////////////////////////////////////////////
+// Generates AngularJS modules, which pre-load your HTML code into the $templateCache //
+// This way AngularJS doesn't need to request the actual HTML files anymore           //
+////////////////////////////////////////////////////////////////////////////////////////
 gulp.task('partials', function() {
   return gulp.src('src/app/**/*.html')
     .pipe($.htmlmin({ removeComments: true, collapseWhitespace: true }))
@@ -138,16 +183,20 @@ gulp.task('partials', function() {
     .pipe($.size({ title: 'partials', showFiles: true }));
 });
 
-// Just copies index.html into dist folder
-gulp.task('copyIndex', function() {
+/////////////////////////////////////////////
+// Just copies index.html into dist folder //
+/////////////////////////////////////////////
+gulp.task('index', function() {
   return gulp.src('src/index.html')
     .pipe($.plumber())
     .pipe(gulp.dest('dist/'))
-    .pipe($.size({ title: 'copyIndex', showFiles: true }));
+    .pipe($.size({ title: 'index', showFiles: true }));
 });
 
-// Inject all partials (*.js) into dist/index.html
-gulp.task('injectPartials', ['copyIndex', 'partials'], function() {
+/////////////////////////////////////////////////////
+// Inject all partials (*.js) into dist/index.html //
+/////////////////////////////////////////////////////
+gulp.task('inject', ['index', 'partials'], function() {
   return gulp.src('dist/index.html')
     .pipe($.plumber())
     .pipe($.inject(gulp.src('dist/partials/**/*.js', { read: false }), {
@@ -157,10 +206,12 @@ gulp.task('injectPartials', ['copyIndex', 'partials'], function() {
     }))
     // .pipe(htmlmin({ removeComments: true, collapseWhitespace: true }))
     .pipe(gulp.dest('dist/'))
-    .pipe($.size({ title: 'injectPartials', showFiles: true }));
+    .pipe($.size({ title: 'inject', showFiles: true }));
 });
 
-// Injects bower components
+//////////////////////////////
+// Injects bower components //
+//////////////////////////////
 gulp.task('wiredep', function() {
   var wiredep = $.wiredep.stream;
   return gulp.src('src/index.html')
@@ -172,11 +223,13 @@ gulp.task('wiredep', function() {
     .pipe($.size({ title: 'wiredep', showFiles: true }));
 });
 
-// Change and concat bower assets
+//////////////////////////////////////
+// Changes and concats bower assets //
+//////////////////////////////////////
 gulp.task('useref', function() {
-  var jsFilter = $.filter('**/*.js');
-  var cssFilter = $.filter('**/*.css');
-  var assets = $.useref.assets();
+  var jsFilter = $.filter('**/*.js'),
+      cssFilter = $.filter('**/*.css'),
+      assets = $.useref.assets();
 
   return gulp.src('src/index.html')
     .pipe(assets)
@@ -190,32 +243,26 @@ gulp.task('useref', function() {
     .pipe(assets.restore())
     .pipe($.useref())
     .pipe($.revReplace())
-    .pipe(gulp.dest('dist'));
+    .pipe(gulp.dest('dist'))
+    .pipe($.size({ title: 'useref', showFiles: true }));
 });
 
-// Build task (for production only)
+//////////////////////////////////////
+// Build task (for production only) //
+//////////////////////////////////////
 gulp.task('build', function() {
   var temp = ENV;
   ENV = distribution;
-  $.runSequence('compileCustomeVendors', 'compileApp', PREPROCESSOR, 'copyAssets', 'copyFonts', 'wiredep', 'injectPartials', 'useref', function() {
+  $.runSequence('customVendors', 'app', PREPROCESSOR, 'assets', 'fonts', 'wiredep', 'inject', 'useref', function() {
     ENV = temp;
   });
 });
 
-// Build and serves
+//////////////////////
+// Build and serves //
+//////////////////////
 gulp.task('default', function() {
-  $.runSequence(['compileCustomeVendors', 'compileApp', PREPROCESSOR, 'copyAssets', 'copyFonts', 'wiredep'], 'connect', 'watch');
+  $.runSequence(['customVendors', 'app', PREPROCESSOR, 'assets', 'fonts', 'wiredep'], 'connect', 'watch');
 });
 
-gulp.task('watch', function() {
-  gulp.watch(['src/vendors/**/*.js'], ['compileCustomeVendors']);
-  gulp.watch(['src/app/**/*.js'], ['compileApp']);
-  gulp.watch(['src/assets/**/*'], ['copyAssets']);
-  gulp.watch(['src/app/**/*.html', 'src/index.html'], $.browserSync.reload);
 
-  if (PREPROCESSOR === lessLang)
-    gulp.watch(['src/styles/less/**/*.less'], ['less']);
-  else
-    gulp.watch(['src/styles/sass/**/*.scss'], ['sass']);
-
-});
