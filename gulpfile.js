@@ -176,7 +176,7 @@ gulp.task('fonts', function() {
 ////////////////////////////////////////////////////////////////////////////////////////
 gulp.task('partials', function() {
   return gulp.src('src/app/**/*.html')
-    .pipe($.htmlmin({ removeComments: true, collapseWhitespace: true }))
+    .pipe($.htmlmin({ removeComments: true, conservativeCollapse: true, collapseWhitespace: true }))
     .pipe($.ngHtml2js({ moduleName: 'app', prefix: "app/" }))
     .pipe($.uglify({ preserveComments: 'some' }))
     .pipe(gulp.dest('dist/partials'))
@@ -194,7 +194,7 @@ gulp.task('inject', function() {
       addRootSlash: false,
       relative: true
     }))
-    // .pipe(htmlmin({ removeComments: true, collapseWhitespace: true }))
+    // .pipe($.htmlmin({ removeComments: true, conservativeCollapse: true, collapseWhitespace: true }))
     .pipe(gulp.dest('dist/'))
     .pipe($.size({ title: 'inject', showFiles: true }));
 });
