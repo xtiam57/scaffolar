@@ -183,20 +183,10 @@ gulp.task('partials', function() {
     .pipe($.size({ title: 'partials', showFiles: true }));
 });
 
-/////////////////////////////////////////////
-// Just copies index.html into dist folder //
-/////////////////////////////////////////////
-gulp.task('index', function() {
-  return gulp.src('src/index.html')
-    .pipe($.plumber())
-    .pipe(gulp.dest('dist/'))
-    .pipe($.size({ title: 'index', showFiles: true }));
-});
-
 /////////////////////////////////////////////////////
 // Inject all partials (*.js) into dist/index.html //
 /////////////////////////////////////////////////////
-gulp.task('inject', ['index', 'partials'], function() {
+gulp.task('inject', function() {
   return gulp.src('dist/index.html')
     .pipe($.plumber())
     .pipe($.inject(gulp.src('dist/partials/**/*.js', { read: false }), {
@@ -253,7 +243,7 @@ gulp.task('useref', function() {
 gulp.task('build', function() {
   var temp = ENV;
   ENV = distribution;
-  $.runSequence('customVendors', 'app', PREPROCESSOR, 'assets', 'fonts', 'bower', 'inject', 'useref', function() {
+  $.runSequence('customVendors', 'app', PREPROCESSOR, 'assets', 'fonts', 'bower', 'useref', 'partials', 'inject', function() {
     ENV = temp;
   });
 });
