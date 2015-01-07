@@ -177,7 +177,7 @@ gulp.task('fonts', function() {
 gulp.task('partials', function() {
   return gulp.src('src/app/**/*.html')
     .pipe($.htmlmin({ removeComments: true, collapseWhitespace: true }))
-    .pipe($.ngHtml2Js({ moduleName: 'app' }))
+    .pipe($.ngHtml2js({ moduleName: 'app' }))
     .pipe($.uglify({ preserveComments: 'some' }))
     .pipe(gulp.dest('dist/partials'))
     .pipe($.size({ title: 'partials', showFiles: true }));
