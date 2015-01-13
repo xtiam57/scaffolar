@@ -54,7 +54,7 @@ gulp.task('watch', function() {
   gulp.watch(['src/app/**/*.js'], ['app']);
   gulp.watch(['src/assets/**/*'], ['assets']);
   gulp.watch(['src/app/**/*.html', 'src/index.html'], $.browserSync.reload);
-  gulp.watch('bower.json', ['bower']);
+  gulp.watch('bower.json', ['bower-install', 'bower']);
 
   if (isLess())
     gulp.watch(['src/styles/less/**/*.less'], ['less']);
@@ -237,13 +237,21 @@ gulp.task('useref', function() {
     .pipe($.size({ title: 'useref', showFiles: true }));
 });
 
+/////////////////////////////////
+// Installing bower components //
+/////////////////////////////////
+gulp.task('bower-install', function() {
+  return gulp.src(['bower.json'])
+    .pipe($.install());
+});
+
 //////////////////////////////////////
 // Build task (for production only) //
 //////////////////////////////////////
 gulp.task('build', function() {
   var temp = ENV;
   ENV = distribution;
-  $.runSequence('customVendors', 'app', PREPROCESSOR, 'assets', 'fonts', 'bower', 'useref', 'partials', 'inject', function() {
+  $.runSequence('bower-install' ,'customVendors', 'app', PREPROCESSOR, 'assets', 'fonts', 'bower', 'useref', 'partials', 'inject', function() {
     ENV = temp;
   });
 });
@@ -252,7 +260,7 @@ gulp.task('build', function() {
 // Build and serves //
 //////////////////////
 gulp.task('default', function() {
-  $.runSequence(['customVendors', 'app', PREPROCESSOR, 'assets', 'fonts', 'bower'], 'connect', 'watch');
+  $.runSequence('bower-install' ,['customVendors', 'app', PREPROCESSOR, 'assets', 'fonts', 'bower'], 'connect', 'watch');
 });
 
 
