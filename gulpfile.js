@@ -11,7 +11,7 @@ var development = 'DEV',        // Development's tag name
 ///////////////////////////
 var ENV = development,          // Environment type (development | distribution)
     PREPROCESSOR = lessLang,    // Prepocessor type (lessLang | sassLang)
-    PORT = 7070;                // Port's number
+    PORT = 9090;                // Port's number
 
 function isDevelopment() { return ENV === development; }
 function isDistribution() { return ENV === distribution; }
@@ -60,7 +60,6 @@ gulp.task('watch', function() {
     gulp.watch(['src/styles/less/**/*.less'], ['less']);
   else
     gulp.watch(['src/styles/sass/**/*.scss'], ['sass']);
-
 });
 
 ////////////////////////////////////////////////////////////////
@@ -130,7 +129,6 @@ gulp.task('less', function() {
       'android 4'
     ))
     .pipe($.if(isDevelopment(), $.csso()))
-    // .pipe($.rename({ suffix: '.min' }))
     .pipe($.if(isDistribution(), $.rev()))
     .pipe(gulp.dest('dist/css'))
     .pipe($.if(isDistribution(), $.rev.manifest('less.json')))
@@ -160,7 +158,6 @@ gulp.task('sass', function() {
       'android 4'
     ))
     .pipe($.if(isDevelopment(), $.csso()))
-    // .pipe($.rename({ suffix: '.min' }))
     .pipe($.if(isDistribution(), $.rev()))
     .pipe(gulp.dest('dist/css'))
     .pipe($.if(isDistribution(), $.rev.manifest('less.json')))
@@ -217,7 +214,6 @@ gulp.task('inject', function() {
       addRootSlash: false,
       relative: true
     }))
-    // .pipe($.htmlmin({ removeComments: true, conservativeCollapse: true, collapseWhitespace: true }))
     .pipe(gulp.dest('dist/'))
     .pipe($.size({ title: 'inject', showFiles: true }));
 });
