@@ -70,11 +70,24 @@ gulp.task('customVendors', function() {
   return gulp.src('src/vendors/**/*.js')
     .pipe($.plumber())
     .pipe($.newer('dist/js'))
-    .pipe($.concat('custom-vendors.min.js', { newLine: ';' }))
+    .pipe($.concat('custom-vendors.js', { newLine: ';' }))
     .pipe($.uglify({ preserveComments: 'some' }))
+    .pipe($.if(isDistribution(), $.rev()))
     .pipe(gulp.dest('dist/js'))
+    .pipe($.if(isDistribution(), $.rev.manifest('custom-vendors.json')))
+    .pipe($.if(isDistribution(), gulp.dest('dist/revisions/')))
     .pipe($.size({ title: 'customVendors', showFiles: true }))
     .pipe($.browserSync.reload({ stream: true }));
+});
+
+////////////////////////
+// Creating revisions //
+////////////////////////
+gulp.task('revision', function() {
+  return gulp.src(['dist/revisions/**.json', 'dist/index.html'])
+    .pipe($.revCollector())
+    .pipe(gulp.dest('dist'))
+    .pipe($.size({ title: 'revision', showFiles: true }));
 });
 
 /////////////////////////////////////////////////////////////
@@ -87,11 +100,14 @@ gulp.task('app', function() {
     .pipe($.jshint())
     .pipe($.jshint.reporter('jshint-stylish'))
     .pipe($.if(isDevelopment(), $.sourcemaps.init()))
-    .pipe($.concat('app.min.js', { newLine: ';' }))
+    .pipe($.concat('app.js', { newLine: ';' }))
     .pipe($.ngAnnotate())
     .pipe($.uglify({ preserveComments: 'some' }))
     .pipe($.if(isDevelopment(), $.sourcemaps.write('../maps', { includeContent: false, sourceRoot: '/app' })))
+    .pipe($.if(isDistribution(), $.rev()))
     .pipe(gulp.dest('dist/js'))
+    .pipe($.if(isDistribution(), $.rev.manifest('app.json')))
+    .pipe($.if(isDistribution(), gulp.dest('dist/revisions/')))
     .pipe($.size({ title: 'app', showFiles: true }))
     .pipe($.browserSync.reload({ stream: true }));
 });
@@ -114,8 +130,11 @@ gulp.task('less', function() {
       'android 4'
     ))
     .pipe($.if(isDevelopment(), $.csso()))
-    .pipe($.rename({ suffix: '.min' }))
+    // .pipe($.rename({ suffix: '.min' }))
+    .pipe($.if(isDistribution(), $.rev()))
     .pipe(gulp.dest('dist/css'))
+    .pipe($.if(isDistribution(), $.rev.manifest('less.json')))
+    .pipe($.if(isDistribution(), gulp.dest('dist/revisions/')))
     .pipe($.size({ title: 'less', showFiles: true }))
     .pipe($.browserSync.reload({ stream: true }));
 });
@@ -141,8 +160,11 @@ gulp.task('sass', function() {
       'android 4'
     ))
     .pipe($.if(isDevelopment(), $.csso()))
-    .pipe($.rename({ suffix: '.min' }))
+    // .pipe($.rename({ suffix: '.min' }))
+    .pipe($.if(isDistribution(), $.rev()))
     .pipe(gulp.dest('dist/css'))
+    .pipe($.if(isDistribution(), $.rev.manifest('less.json')))
+    .pipe($.if(isDistribution(), gulp.dest('dist/revisions/')))
     .pipe($.size({ title: 'sass', showFiles: true }))
     .pipe($.browserSync.reload({ stream: true }));
 });
@@ -179,6 +201,7 @@ gulp.task('partials', function() {
     .pipe($.htmlmin({ removeComments: true, conservativeCollapse: true, collapseWhitespace: true }))
     .pipe($.ngHtml2js({ moduleName: 'app', prefix: "app/" }))
     .pipe($.uglify({ preserveComments: 'some' }))
+    .pipe($.rev())
     .pipe(gulp.dest('dist/partials'))
     .pipe($.size({ title: 'partials', showFiles: true }));
 });
@@ -251,7 +274,7 @@ gulp.task('bower-install', function() {
 gulp.task('build', function() {
   var temp = ENV;
   ENV = distribution;
-  $.runSequence('bower-install' ,'customVendors', 'app', PREPROCESSOR, 'assets', 'fonts', 'bower', 'useref', 'partials', 'inject', function() {
+  $.runSequence('bower-install', 'bower', 'useref', 'partials', 'inject', 'customVendors', 'app', PREPROCESSOR, 'assets', 'fonts', 'revision', function() {
     ENV = temp;
   });
 });
@@ -262,5 +285,4 @@ gulp.task('build', function() {
 gulp.task('default', function() {
   $.runSequence('bower-install' ,['customVendors', 'app', PREPROCESSOR, 'assets', 'fonts', 'bower'], 'connect', 'watch');
 });
-
 
