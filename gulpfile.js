@@ -95,7 +95,7 @@ gulp.task('revision', function() {
 gulp.task('app', function() {
   return gulp.src('src/app/**/*.js')
     .pipe($.plumber())
-    .pipe($.newer('dist/js'))
+    // .pipe($.newer('dist/js'))
     .pipe($.jshint())
     .pipe($.jshint.reporter('jshint-stylish'))
     .pipe($.if(isDevelopment(), $.sourcemaps.init()))
@@ -126,7 +126,7 @@ gulp.task('less', function() {
   // NOTE: if I return the stream, when there is an error, everything breaks
   gulp.src('src/styles/less/{custom-vendors,style}.less')
     .pipe($.plumber())
-    .pipe($.newer('dist/css'))
+    // .pipe($.newer('dist/css'))
     .pipe($.less())
     .pipe($.autoprefixer(
       'last 2 version',
@@ -151,7 +151,7 @@ gulp.task('less', function() {
 gulp.task('sass', function() {
   return gulp.src('src/styles/sass/{custom-vendors,style}.scss')
     .pipe($.plumber())
-    .pipe($.newer('dist/css'))
+    // .pipe($.newer('dist/css'))
     .pipe($.rubySass({
       compass: true,
       lineNumbers: isDevelopment(),
