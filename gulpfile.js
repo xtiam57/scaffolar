@@ -111,6 +111,14 @@ gulp.task('app', function() {
     .pipe($.browserSync.reload({ stream: true }));
 });
 
+/////////////////////
+// Clean all files //
+/////////////////////
+gulp.task('clean', function () {
+  return gulp.src(['dist/js/*.js', 'dist/maps/*.js.map', 'dist/css/*.css'], { read: false })
+    .pipe($.clean());
+});
+
 //////////////////////////////////////////////////////////
 // Compiles, auto-prefixes and minifies all .less files //
 //////////////////////////////////////////////////////////
@@ -270,7 +278,7 @@ gulp.task('bower-install', function() {
 gulp.task('build', function() {
   var temp = ENV;
   ENV = distribution;
-  $.runSequence('bower-install', 'bower', 'useref', 'partials', 'inject', 'customVendors', 'app', PREPROCESSOR, 'assets', 'fonts', 'revision', function() {
+  $.runSequence('clean', 'bower-install', 'bower', 'useref', 'partials', 'inject', 'customVendors', 'app', PREPROCESSOR, 'assets', 'fonts', 'revision', function() {
     ENV = temp;
   });
 });
@@ -279,6 +287,6 @@ gulp.task('build', function() {
 // Build and serves //
 //////////////////////
 gulp.task('default', function() {
-  $.runSequence('bower-install' ,['customVendors', 'app', PREPROCESSOR, 'assets', 'fonts', 'bower'], 'connect', 'watch');
+  $.runSequence('clean', 'bower-install', ['customVendors', 'app', PREPROCESSOR, 'assets', 'fonts', 'bower'], 'connect', 'watch');
 });
 
