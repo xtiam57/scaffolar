@@ -3,6 +3,15 @@ angular.module('app')
     // Log configuration
     $logProvider.debugEnabled(true);
 
+    // Negative currency
+    $provide.decorator('$locale', ['$delegate', function($delegate) {
+      if ($delegate.id == 'en-us') {
+        $delegate.NUMBER_FORMATS.PATTERNS[1].negPre = '-\u00A4';
+        $delegate.NUMBER_FORMATS.PATTERNS[1].negSuf = '';
+      }
+      return $delegate;
+    }]);
+
     // Base URL
     RESTfulProvider.setBaseUrl(API.url);
 
