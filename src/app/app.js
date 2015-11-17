@@ -8,7 +8,3 @@ angular.module('app', [
   'jsonFormatter',
   'angular-cache',
 ]);
-
-// _.str becomes a global variable if no module loading is detected
-// Mix in non-conflict functions to Underscore namespace
-// _.mixin(_.str.exports());
