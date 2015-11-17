@@ -3,8 +3,7 @@
 //////////////////////
 var development = 'DEV',        // Development's tag name
     distribution = 'DIST',      // Distribution's tag name
-    lessLang = 'less',          // Less language
-    sassLang = 'sass';          // Sass language
+    lessLang = 'less';          // Less language
 
 ///////////////////////////
 // Environment variables //
@@ -16,7 +15,6 @@ var ENV = development,          // Environment type (development | distribution)
 function isDevelopment() { return ENV === development; }
 function isDistribution() { return ENV === distribution; }
 function isLess() { return PREPROCESSOR === lessLang; }
-function isSass() { return PREPROCESSOR === sassLang; }
 
 ////////////////////
 // Gulp's plugins //
@@ -127,7 +125,9 @@ gulp.task('less', function() {
   gulp.src('src/styles/less/{custom-vendors,style}.less')
     .pipe($.plumber())
     // .pipe($.newer('dist/css'))
-    .pipe($.less())
+    .pipe($.less({
+      paths: [ './bower_components/bootstrap/less' ]
+    }))
     .pipe($.autoprefixer(
       'last 2 version',
       '> 1%',
@@ -136,7 +136,7 @@ gulp.task('less', function() {
       'ios 6',
       'android 4'
     ))
-    .pipe($.if(isDevelopment(), $.csso()))
+    .pipe($.if(isDistribution(), $.csso()))
     .pipe($.if(isDistribution(), $.rev()))
     .pipe(gulp.dest('dist/css'))
     .pipe($.if(isDistribution(), $.rev.manifest('less.json')))
@@ -148,31 +148,31 @@ gulp.task('less', function() {
 //////////////////////////////////////////////////////////
 // Compiles, auto-prefixes and minifies all .scss files //
 //////////////////////////////////////////////////////////
-gulp.task('sass', function() {
-  return gulp.src('src/styles/sass/{custom-vendors,style}.scss')
-    .pipe($.plumber())
-    // .pipe($.newer('dist/css'))
-    .pipe($.rubySass({
-      compass: true,
-      lineNumbers: isDevelopment(),
-      precision: 6,
-    }))
-    .pipe($.autoprefixer(
-      'last 2 version',
-      '> 1%',
-      'ie 8',
-      'ie 9',
-      'ios 6',
-      'android 4'
-    ))
-    .pipe($.if(isDevelopment(), $.csso()))
-    .pipe($.if(isDistribution(), $.rev()))
-    .pipe(gulp.dest('dist/css'))
-    .pipe($.if(isDistribution(), $.rev.manifest('less.json')))
-    .pipe($.if(isDistribution(), gulp.dest('dist/revisions/')))
-    .pipe($.size({ title: 'sass', showFiles: true }))
-    .pipe($.browserSync.reload({ stream: true }));
-});
+// gulp.task('sass', function() {
+//   return gulp.src('src/styles/sass/{custom-vendors,style}.scss')
+//     .pipe($.plumber())
+//     // .pipe($.newer('dist/css'))
+//     .pipe($.rubySass({
+//       compass: true,
+//       lineNumbers: isDevelopment(),
+//       precision: 6,
+//     }))
+//     .pipe($.autoprefixer(
+//       'last 2 version',
+//       '> 1%',
+//       'ie 8',
+//       'ie 9',
+//       'ios 6',
+//       'android 4'
+//     ))
+//     .pipe($.if(isDevelopment(), $.csso()))
+//     .pipe($.if(isDistribution(), $.rev()))
+//     .pipe(gulp.dest('dist/css'))
+//     .pipe($.if(isDistribution(), $.rev.manifest('less.json')))
+//     .pipe($.if(isDistribution(), gulp.dest('dist/revisions/')))
+//     .pipe($.size({ title: 'sass', showFiles: true }))
+//     .pipe($.browserSync.reload({ stream: true }));
+// });
 
 ///////////////////////////////////////////////
 // Just copies all assets in the dist folder //
@@ -233,8 +233,7 @@ gulp.task('bower', function() {
   var wiredep = $.wiredep.stream;
   return gulp.src('src/index.html')
     .pipe(wiredep({
-      directory: 'bower_components',
-      exclude: [/bootstrap.css/],
+      directory: 'bower_components'
     }))
     .pipe(gulp.dest('src'))
     .pipe($.size({ title: 'bower', showFiles: true }));

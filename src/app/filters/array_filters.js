@@ -13,7 +13,7 @@ angular.module('app')
       var output = [],
       keys = [];
 
-      angular.forEach(collection, function(item) {
+      _.each(collection, function(item) {
         var key = item;
         if (keyname)
           key = item[keyname];
@@ -26,5 +26,16 @@ angular.module('app')
       });
       return output;
     };
+  })
+
+  // Offset
+  .filter('startFrom', function() {
+    return function(input, start) {
+      if (_(input).isArray()) {
+        start = +start;
+        return input.slice(start);
+      }
+    };
   });
+
 

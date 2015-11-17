@@ -6,6 +6,9 @@ angular.module('app')
   // => 1 1/3
   .filter('fraction', function() {
     return function(value) {
+      if (_.isNull(value) || _.isUndefined(value))
+        return '';
+
       return Ratio.parse(value, true)
               .simplify()
               .toQuantityOf(2, 3, 4, 5, 8, 16, 32, 40)
