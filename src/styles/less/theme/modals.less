@@ -1,9 +1,9 @@
-.modal-opacity(@counter; @alpha) when (@counter >= 0) {
-  div.modal[index="@{counter}"]{
-    background-color: rgba(0, 0, 0, @alpha) !important;
-  }
-  .modal-opacity((@counter - 1);  @alpha);
-}
+// .modal-opacity(@counter; @alpha) when (@counter >= 0) {
+//   div.modal[index="@{counter}"]{
+//     background-color: rgba(0, 0, 0, @alpha) !important;
+//   }
+//   .modal-opacity((@counter - 1);  @alpha);
+// }
 
 .modal-fluid-size(@size; @delta) when (@size < 100) {
   @item: ~".modal-@{size}";
@@ -28,7 +28,7 @@
 }
 
 // Mixin's calls
-.modal-opacity(@modal-levels, @modal-transparancy);
+// .modal-opacity(@modal-levels, @modal-transparancy);
 .modal-fluid-size(10, 5);
 
 .modal {
@@ -49,4 +49,9 @@
       min-width: 62px;
     }
   }
+
+  .modal-content {
+    box-shadow: 0 27px 24px 0 rgba(0,0,0,.2), 0 40px 77px 0 rgba(0,0,0,.22);
+  }
 }
+

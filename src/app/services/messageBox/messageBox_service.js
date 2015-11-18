@@ -40,10 +40,10 @@ angular.module('app')
         if (!_(['default', 'success', 'warning', 'danger', 'info', 'primary']).contains(type))
           type = 'default';
 
-        if (!_(['sm', 'lg']).contains(size))
-          size = null;
+        if (_(size).isEmpty())
+          size = 'sm';
 
-        if (!_([true, false]).contains(backdrop))
+        if (!_([true, false, 'static']).contains(backdrop))
           backdrop = true;
 
         return $uibModal.open({
