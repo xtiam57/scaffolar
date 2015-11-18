@@ -1,0 +1,69 @@
+.btn-link-variant(@name; @color; @hover; @disabled) {
+  .btn-link.btn-@{name} {
+    color: @color;
+    outline: 0;
+    border-color: transparent;
+
+    &:hover,
+    &:focus {
+      color: @hover;
+    }
+    &[disabled],
+    fieldset[disabled] & {
+      &:hover,
+      &:focus {
+        color: @disabled;
+      }
+    }
+  }
+}
+
+.btn-link-variant(danger; @brand-danger; darken(@brand-danger, 15%); @gray-light);
+.btn-link-variant(success; @brand-success; darken(@brand-success, 15%); @gray-light);
+.btn-link-variant(warning; @brand-warning; darken(@brand-warning, 15%); @gray-light);
+.btn-link-variant(primary; @brand-primary; darken(@brand-primary, 15%); @gray-light);
+.btn-link-variant(info; @brand-info; darken(@brand-info, 15%); @gray-light);
+.btn-link-variant(default; #999; darken(#999, 15%); @gray-light);
+
+.btn,
+button {
+  font-weight: bold;
+  text-transform: uppercase;
+  &.btn-link:focus { outline: 0; }
+}
+
+
+.btn-default {
+  &.active[disabled] {
+    background-color: darken(@btn-default-bg, 10%);
+  }
+}
+.btn-primary {
+  &.active[disabled] {
+    background-color: darken(@btn-primary-bg, 10%);
+  }
+}
+// Success appears as green
+.btn-success {
+  &.active[disabled] {
+    background-color: darken(@btn-success-bg, 10%);
+  }
+}
+// Info appears as blue-green
+.btn-info {
+  &.active[disabled] {
+    background-color: darken(@btn-info-bg, 10%);
+  }
+}
+// Warning appears as orange
+.btn-warning {
+  &.active[disabled] {
+    background-color: darken(@btn-warning-bg, 10%);
+  }
+}
+// Danger and error appear as red
+.btn-danger {
+  &.active[disabled] {
+    background-color: darken(@btn-danger-bg, 10%);
+  }
+}
