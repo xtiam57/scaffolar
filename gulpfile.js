@@ -191,7 +191,7 @@ gulp.task('assets', function() {
 ///////////////////////////////////
 gulp.task('fonts', function() {
   return gulp.src($.mainBowerFiles())
-    .pipe($.filter('**/*.{eot,svg,ttf,woff,otf}'))
+    .pipe($.filter('**/*.{eot,svg,ttf,woff,woff2,otf}'))
     .pipe($.flatten())
     .pipe(gulp.dest('dist/fonts'))
     .pipe($.size({ title: 'fonts', showFiles: true }));
