@@ -1,3 +1,15 @@
+.clearfix {
+    *zoom: 1;
+}
+.clearfix:before,
+.clearfix:after {
+    display: table;
+    content: "";
+}
+.clearfix:after {
+    clear: both;
+}
+
 // Cursors
 .pointer { cursor: pointer; }
 .move { cursor: move; }
@@ -27,7 +39,10 @@
 }
 
 // Block
-.centered { .center-block(); }
+.centered {
+  margin: 0 auto;
+  display: block;
+}
 
 // Borders
 .borderless { border: none !important; }
@@ -141,13 +156,6 @@ textarea {
   border-left: 1px solid #ddd;
   border-right: 1px solid #ddd;
 }
-
-.border-success { border-color: @brand-success; }
-.border-info { border-color: @brand-info; }
-.border-warning { border-color: @brand-warning; }
-.border-danger { border-color: @brand-danger; }
-.border-primary { border-color: @brand-primary; }
-.border-default { border-color: #ddd; }
 
 // Font
 .bold, .strong {

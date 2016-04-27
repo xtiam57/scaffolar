@@ -14,30 +14,31 @@
     "tests"
   ],
   "dependencies": {
-    "angular": "~1.4.7",
-    "angular-sanitize": "~1.4.7",
-    "angular-ui-router": "~0.2.15",
-    "font-awesome": "~4.4.0",
-    "moment": "~2.10.6",
-    "underscore": "~1.8.3",
-    "underscore.string": "~3.2.2",
-    "bootstrap": "~3.3.5",
-    "jquery": "~2.1.4",
-    "angular-bootstrap": "~0.14.3",
-    "angular-animate": "~1.4.7",
-    "json-formatter": "~0.4.1",
-    "angular-cache": "~4.4.2",
-    "angular-xeditable": "~0.1.9"
+    "angular": "^1.5.5",
+    "angular-sanitize": "^1.5.5",
+    "angular-ui-router": "^0.2.18",
+    "font-awesome": "^4.6.1",
+    "moment": "^2.13.0",
+    "underscore": "^1.8.3",
+    "angular-animate": "^1.5.5",
+    "angular-cache": "^4.5.0",
+    "jquery": "^2.2.3",
+    "underscore.string": "^3.3.4",
+    "json-formatter": "^0.5.0",
+    "animate.css": "^3.5.1",
+    "angular-material": "^1.0.7"
   },
   "overrides": {
     "font-awesome": {
       "main": [
-        "fonts/*", "css/font-awesome.min.css"
+        "fonts/*",
+        "css/font-awesome.min.css"
       ]
     },
     "bootstrap": {
       "main": [
-        "dist/fonts/*", "dist/js/bootstrap.min.js"
+        "dist/fonts/*",
+        "dist/js/bootstrap.min.js"
       ]
     }
   }

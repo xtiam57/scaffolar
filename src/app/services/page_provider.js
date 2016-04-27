@@ -13,12 +13,8 @@ angular.module('app')
           get: function() {
             if ($state.is($state.current.name)) {
               // globals setting for the current page
-              $rootScope.gPage = {
-                pageTitle : (_baseTitle ? _baseTitle + ' | ' : '') + $state.current.title,
-                title     : $state.current.title,
-                alias     : $state.current.alias,
-                fullWidth : $state.current.fullWidth || false,
-              };
+              $rootScope.gPage = angular.copy($state.current);
+              $rootScope.gPage.pageTitle =  (_baseTitle ? _baseTitle + ' | ' : '') + $state.current.title;
             }
           },
         };

@@ -1,11 +1,11 @@
 angular.module('app')
-  .factory('StorageService', function(CacheFactory) {
+  .factory('StorageService', function(CacheFactory, APP_INFO) {
 
-    var _localCache = CacheFactory.createCache('app-local', {
+    var _localCache = CacheFactory.createCache(APP_INFO.name + '.app-local', {
       storageMode: 'localStorage',
     });
 
-    var _sessionCache = CacheFactory.createCache('app-session', {
+    var _sessionCache = CacheFactory.createCache(APP_INFO.name + '.app-session', {
       storageMode: 'sessionStorage',
     });
 

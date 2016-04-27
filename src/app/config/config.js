@@ -1,7 +1,11 @@
 angular.module('app')
-  .config(function($logProvider, $locationProvider, API, RESTfulProvider, PageServiceProvider, $provide) {
+  .config(function($logProvider, $locationProvider, API, APP_INFO, RESTfulProvider, PageServiceProvider, $provide, $mdThemingProvider) {
     // Log configuration
     $logProvider.debugEnabled(true);
+
+    $mdThemingProvider.theme('default')
+      .primaryPalette('pink')
+      .accentPalette('orange');
 
     // Negative currency
     $provide.decorator('$locale', ['$delegate', function($delegate) {
@@ -16,7 +20,7 @@ angular.module('app')
     RESTfulProvider.setBaseUrl(API.url);
 
     // Base Title
-    PageServiceProvider.setBaseTitle('Scaffolar');
+    PageServiceProvider.setBaseTitle(APP_INFO.name);
 
     // Setting this property to true will elimate the # from all URLs
     $locationProvider.html5Mode(false);

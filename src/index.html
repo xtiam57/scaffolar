@@ -14,7 +14,8 @@
   <!-- bower:css -->
   <link rel="stylesheet" href="../bower_components/font-awesome/css/font-awesome.min.css" />
   <link rel="stylesheet" href="../bower_components/json-formatter/dist/json-formatter.css" />
-  <link rel="stylesheet" href="../bower_components/angular-xeditable/dist/css/xeditable.css" />
+  <link rel="stylesheet" href="../bower_components/animate.css/animate.css" />
+  <link rel="stylesheet" href="../bower_components/angular-material/angular-material.css" />
   <!-- endbower -->
 
   <!-- endbuild -->
@@ -44,7 +45,7 @@
 <body>
 
   <!-- Alerts -->
-  <div class="alerts-container">
+  <!-- <div class="alerts-container">
     <div ng-repeat="alert in getAlerts()">
       <div class="row alert-message {{ alert.type }}-message">
         <div class="col-xs-1 text-center alert-icon">
@@ -58,18 +59,13 @@
         </div>
       </div>
     </div>
-  </div>
+  </div> -->
   <!-- /Alerts -->
 
-  <div class="container">
-    <div class="jumbotron">
-      <h1>Scaffolar</h1>
-      <h3>The AngularJS' scaffolding tool for single page websites</h3>
-
-      <!-- Templates -->
-      <div ui-view ng-cloak class="ng-cloak"></div>
-      <!-- /Templates -->
-    </div>
+  <div class="container centered">
+    <!-- Templates -->
+    <div ui-view ng-cloak class="ng-cloak"></div>
+    <!-- /Templates -->
   </div>
 
   <!-- build:js js/vendors.js -->
@@ -81,13 +77,13 @@
   <script src="../bower_components/angular-ui-router/release/angular-ui-router.js"></script>
   <script src="../bower_components/moment/moment.js"></script>
   <script src="../bower_components/underscore/underscore.js"></script>
-  <script src="../bower_components/underscore.string/dist/underscore.string.js"></script>
-  <script src="../bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
-  <script src="../bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
   <script src="../bower_components/angular-animate/angular-animate.js"></script>
-  <script src="../bower_components/json-formatter/dist/json-formatter.js"></script>
   <script src="../bower_components/angular-cache/dist/angular-cache.js"></script>
-  <script src="../bower_components/angular-xeditable/dist/js/xeditable.js"></script>
+  <script src="../bower_components/underscore.string/dist/underscore.string.js"></script>
+  <script src="../bower_components/json-formatter/dist/json-formatter.js"></script>
+  <script src="../bower_components/angular-aria/angular-aria.js"></script>
+  <script src="../bower_components/angular-messages/angular-messages.js"></script>
+  <script src="../bower_components/angular-material/angular-material.js"></script>
   <!-- endbower -->
 
   <!-- endbuild -->

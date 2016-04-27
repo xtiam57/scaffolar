@@ -122,7 +122,7 @@ gulp.task('clean', function () {
 //////////////////////////////////////////////////////////
 gulp.task('less', function() {
   // NOTE: if I return the stream, when there is an error, everything breaks
-  gulp.src('src/styles/less/{custom-vendors,style}.less')
+  gulp.src('src/styles/less/{style}.less')
     .pipe($.plumber())
     // .pipe($.newer('dist/css'))
     .pipe($.less({

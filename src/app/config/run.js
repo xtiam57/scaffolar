@@ -1,5 +1,11 @@
 angular.module('app')
-  .run(function($rootScope, $log, PageService) {
+  .run(function($rootScope, $log, PageService, APP_INFO) {
+    // Setting app version
+    $rootScope.APP_INFO = APP_INFO;
+
+    // To access the $log service in HTML
+    $rootScope.$log = $log;
+
     // Broadcasted before a route change. At this point the route services starts
     // resolving all of the dependencies needed for the route change to occur.
     // Typically this involves fetching the view template as well as any dependencies defined
@@ -35,7 +41,4 @@ angular.module('app')
       // $('body, #sb-site').css('height', '1px');
       // $('body, #sb-site').css('height', 'auto');
     });
-
-    // To access the $log service in HTML
-    $rootScope.$log = $log;
   });

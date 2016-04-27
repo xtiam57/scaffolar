@@ -5,7 +5,9 @@ angular.module ('app')
         url: '/',
         controller: 'HomeController',
         templateUrl: 'app/views/home/home.tpl.html',
-        title: 'Home'
+        // The following line, is for routes that require authentication
+        // resolve: { authRequired: ['AuthService', function(a) { return a.checkAuth(); }] },
+        title: 'Home',
       });
 
     $urlRouterProvider.otherwise('/');
